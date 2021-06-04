@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">ToDoSome</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tasks">Tasks</string>
+    <string name="complete_button">Complete</string>
+    <string name="title">Title</string>
+    <string name="set">Set</string>
+    <string name="description">Description</string>
+    <string name="create">Create</string>
+    <string name="new_task">New task</string>
+    <string name="edit_task">Edit task</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="fill_message">Please enter title for the task</string>
 </resources>
