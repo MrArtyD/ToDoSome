@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.todosome.TaskAdapter
+import com.example.todosome.TaskListener
 import com.example.todosome.database.TasksDatabase
 import com.example.todosome.databinding.FragmentToDoBinding
 
@@ -37,19 +37,41 @@ class ToDoFragment : Fragment() {
 
     private fun initEvents() {
 
-        val adapter = TaskAdapter()
+        val adapter = TaskAdapter(TaskListener {
+            viewModel.onTaskClicked(it)
+        })
+
         binding.rvTasks.adapter = adapter
 
         binding.btnActionAddTask.setOnClickListener {
-            findNavController().navigate(ToDoFragmentDirections.actionToDoFragmentToCreateTaskFragment(true))
+            findNavController().navigate(ToDoFragmentDirections.actionToDoFragmentToCreateTaskFragment())
         }
 
+        binding.btnClear.setOnClickListener {
+            viewModel.onClear()
+        }
+
+        viewModel.buttonsVisible.observe(viewLifecycleOwner, {
+            binding.btnClear.isEnabled = it
+            binding.btnComplete.isEnabled = it
+        })
+
+        viewModel.clickedTask.observe(viewLifecycleOwner, {
+            it?.let {
+                findNavController().navigate(
+                    ToDoFragmentDirections.actionToDoFragmentToEditTaskFragment(
+                        it.taskId,
+                        it.title,
+                        it.description
+                    )
+                )
+            }
+        })
+
         viewModel.tasks.observe(viewLifecycleOwner, {
-            it.let {
+            it?.let {
                 adapter.submitList(it)
             }
         })
     }
-
-
 }

@@ -13,17 +13,35 @@
         <action
             android:id="@+id/action_toDoFragment_to_createTaskFragment"
             app:destination="@id/createTaskFragment" />
+        <action
+            android:id="@+id/action_toDoFragment_to_editTaskFragment"
+            app:destination="@id/editTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/createTaskFragment"
-        android:name="com.example.todosome.edittaskfragment.CreateTaskFragment"
+        android:name="com.example.todosome.createtaskfragment.CreateTaskFragment"
         android:label="@string/new_task"
         tools:layout="@layout/fragment_create_task">
         <action
             android:id="@+id/action_createTaskFragment_to_toDoFragment"
             app:destination="@id/toDoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editTaskFragment"
+        android:name="com.example.todosome.edittaskfragment.EditTaskFragment"
+        android:label="@string/edit_task"
+        tools:layout="@layout/edit_task_fragment">
+        <action
+            android:id="@+id/action_editTaskFragment_to_toDoFragment"
+            app:destination="@id/toDoFragment" />
         <argument
-            android:name="toCreate"
-            app:argType="boolean" />
+            android:name="taskId"
+            app:argType="long" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="description"
+            app:argType="string" />
     </fragment>
 </navigation>

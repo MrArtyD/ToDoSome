@@ -11,4 +11,5 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="fill_message">Please enter title for the task</string>
+    <string name="clear_all">Clear All</string>
 </resources>
