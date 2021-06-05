@@ -1,6 +1,7 @@
 package com.example.todosome.edittaskfragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +38,7 @@ class EditTaskFragment : Fragment() {
 
         initFields()
         setHasOptionsMenu(true)
+        Log.d("EditTaskFragment", "Edit created")
         return binding.root
     }
 

@@ -65,6 +65,7 @@ class ToDoFragment : Fragment() {
                         it.description
                     )
                 )
+                viewModel.taskWasClicked()
             }
         })
 

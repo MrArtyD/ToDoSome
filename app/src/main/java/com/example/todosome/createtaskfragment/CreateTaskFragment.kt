@@ -1,6 +1,7 @@
 package com.example.todosome.createtaskfragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,7 @@ class CreateTaskFragment : Fragment() {
         initViewModelEvents()
 
         setHasOptionsMenu(true)
+        Log.d("Create Task Fragment", "Create task - created")
         return binding.root
     }
 

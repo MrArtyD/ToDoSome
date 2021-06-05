@@ -43,6 +43,10 @@ class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
         }
     }
 
+    fun taskWasClicked(){
+        _clickedTask.value = null
+    }
+
     override fun onCleared() {
         super.onCleared()
         job.cancel()
