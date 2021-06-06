@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.todosome.R
 import com.example.todosome.TaskAdapter
 import com.example.todosome.TaskListener
 import com.example.todosome.database.TasksDatabase
 import com.example.todosome.databinding.FragmentToDoBinding
+import com.google.android.material.snackbar.Snackbar
 
 class ToDoFragment : Fragment() {
 
@@ -36,10 +38,14 @@ class ToDoFragment : Fragment() {
     }
 
     private fun initEvents() {
-
-        val adapter = TaskAdapter(TaskListener {
+        val detailClick = TaskListener {
             viewModel.onTaskClicked(it)
-        })
+        }
+        val completeTaskClick = TaskListener {
+            viewModel.onTaskCompleted(it)
+        }
+
+        val adapter = TaskAdapter(detailClick, completeTaskClick, requireContext())
 
         binding.rvTasks.adapter = adapter
 
@@ -53,7 +59,6 @@ class ToDoFragment : Fragment() {
 
         viewModel.buttonsVisible.observe(viewLifecycleOwner, {
             binding.btnClear.isEnabled = it
-            binding.btnComplete.isEnabled = it
         })
 
         viewModel.clickedTask.observe(viewLifecycleOwner, {
@@ -66,6 +71,17 @@ class ToDoFragment : Fragment() {
                     )
                 )
                 viewModel.taskWasClicked()
+            }
+        })
+
+        viewModel.isTaskFinished.observe(viewLifecycleOwner, {
+            if (it == true){
+                Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.congratulations),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                viewModel.taskCompleted()
             }
         })
 

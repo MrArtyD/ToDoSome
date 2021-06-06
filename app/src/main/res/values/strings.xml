@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ToDoSome</string>
     <string name="tasks">Tasks</string>
+    <string name="active_tasks">Active tasks</string>
     <string name="complete_button">Complete</string>
     <string name="title">Title</string>
     <string name="set">Set</string>
@@ -12,4 +13,6 @@
     <string name="delete">Delete</string>
     <string name="fill_message">Please enter title for the task</string>
     <string name="clear_all">Clear All</string>
+    <string name="created_date">Created on: %s</string>
+    <string name="congratulations">Congratulations! You have finished the task!</string>
 </resources>

@@ -1,8 +1,10 @@
 package com.example.todosome
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,28 +12,36 @@ import com.example.todosome.database.Task
 import com.example.todosome.databinding.TaskListItemBinding
 import java.text.SimpleDateFormat
 
-class TaskAdapter(val clickListener: TaskListener) :
+class TaskAdapter(val clickDetails: TaskListener, val clickCompleteTask: TaskListener, val context: Context) :
     ListAdapter<Task, TaskAdapter.ViewHolder>(TaskDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(parent, context)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, clickListener)
+        holder.bind(item, clickDetails, clickCompleteTask)
     }
 
-    class ViewHolder private constructor(val binding: TaskListItemBinding) :
+    class ViewHolder private constructor(private val binding: TaskListItemBinding, val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Task, clickListener: TaskListener) {
+        fun bind(item: Task, clickDetails: TaskListener, clickCompleteTask: TaskListener) {
             binding.itemLayout.setOnClickListener {
-                clickListener.onClick(item)
+                clickDetails.onClick(item)
             }
 
             binding.tvTitleTaskItem.text = item.title
-            binding.tvDateTaskItem.text = convertDateToString(item.creationTime)
+            binding.tvDateTaskItem.text = context
+                .getString(R.string.created_date, convertDateToString(item.creationTime))
+
+            binding.cbTaskItem.setOnClickListener { checkBox ->
+                if (checkBox is CheckBox){
+                    item.isCompleted = checkBox.isChecked
+                    clickCompleteTask.onClick(item)
+                }
+            }
         }
 
         @SuppressLint("SimpleDateFormat")
@@ -40,10 +50,10 @@ class TaskAdapter(val clickListener: TaskListener) :
         }
 
         companion object {
-            fun from(parent: ViewGroup): ViewHolder {
+            fun from(parent: ViewGroup, context: Context): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = TaskListItemBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(binding)
+                return ViewHolder(binding, context)
 
             }
         }
