@@ -1,9 +1,8 @@
 package com.example.todosome.todofragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -33,32 +32,20 @@ class ToDoFragment : Fragment() {
             .get(ToDoViewModel::class.java)
 
         initEvents()
+        setHasOptionsMenu(true)
 
         return binding.root
     }
 
     private fun initEvents() {
-        val detailClick = TaskListener {
-            viewModel.onTaskClicked(it)
-        }
-        val completeTaskClick = TaskListener {
-            viewModel.onTaskCompleted(it)
-        }
 
-        val adapter = TaskAdapter(detailClick, completeTaskClick, requireContext())
-
-        binding.rvTasks.adapter = adapter
-
-        binding.btnActionAddTask.setOnClickListener {
-            findNavController().navigate(ToDoFragmentDirections.actionToDoFragmentToCreateTaskFragment())
-        }
-
-        binding.btnClear.setOnClickListener {
-            viewModel.onClear()
-        }
+        initAdapter()
+        initButtonsClick()
 
         viewModel.buttonsVisible.observe(viewLifecycleOwner, {
-            binding.btnClear.isEnabled = it
+            if (it == true){
+                binding.btnClear.isEnabled = it
+            }
         })
 
         viewModel.clickedTask.observe(viewLifecycleOwner, {
@@ -84,11 +71,84 @@ class ToDoFragment : Fragment() {
                 viewModel.taskCompleted()
             }
         })
+    }
 
-        viewModel.tasks.observe(viewLifecycleOwner, {
+    private fun initAdapter() {
+        val detailClick = TaskListener {
+            viewModel.onTaskClicked(it)
+        }
+        val completeTaskClick = TaskListener {
+            viewModel.onTaskCompleted(it)
+        }
+
+        val adapter = TaskAdapter(detailClick, completeTaskClick, requireContext())
+
+        binding.rvTasks.adapter = adapter
+
+        viewModel.allTasks.observe(viewLifecycleOwner, {
+            viewModel.checkFilterStatus(it)
+        })
+
+        viewModel.currentTasks.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }
         })
+    }
+
+    private fun initButtonsClick() {
+        binding.btnActionAddTask.setOnClickListener {
+            findNavController().navigate(ToDoFragmentDirections.actionToDoFragmentToCreateTaskFragment())
+        }
+
+        binding.btnClear.setOnClickListener {
+            viewModel.onClear()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_screen_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.filter_all -> {
+                showAllTasks()
+                Toast.makeText(this.activity, "All", Toast.LENGTH_SHORT).show()
+                true
+            }
+
+            R.id.filter_active -> {
+                showActiveTasks()
+                Toast.makeText(this.activity, "All active", Toast.LENGTH_SHORT).show()
+                true
+            }
+
+            R.id.filter_completed -> {
+                showCompletedTasks()
+                Toast.makeText(this.activity, "All completed", Toast.LENGTH_SHORT).show()
+                true
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    private fun showAllTasks() {
+        viewModel.showAllTasks()
+        binding.tvListTitle.text = getString(R.string.all_tasks)
+    }
+
+    private fun showActiveTasks(){
+        viewModel.showActiveTasks()
+        binding.tvListTitle.text = getString(R.string.active_tasks)
+    }
+
+    private fun showCompletedTasks(){
+        viewModel.showCompletedTasks()
+        binding.tvListTitle.text = getString(R.string.completed_tasks)
     }
 }

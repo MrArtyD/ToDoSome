@@ -1,19 +1,30 @@
 package com.example.todosome.todofragment
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.todosome.database.Task
 import com.example.todosome.database.TasksDatabaseDao
 import kotlinx.coroutines.*
 
 class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
 
+    enum class FilterStatus{
+        ALL_TASKS,
+        ACTIVE_TASKS,
+        COMPLETED_TASKS
+    }
+
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    val tasks = databaseDao.getToDoTasks()
+    private var filterState = MutableLiveData<FilterStatus>()
+
+    private var _allTasks = databaseDao.getAllTasks()
+    val allTasks : LiveData<List<Task>>
+        get() = _allTasks
+
+    private var _currentTasks = MutableLiveData<List<Task>>()
+    val currentTasks : LiveData<List<Task>>
+        get() = _currentTasks
 
     private val _clickedTask = MutableLiveData<Task?>()
     val clickedTask: LiveData<Task?>
@@ -23,13 +34,14 @@ class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
     val isTaskFinished: LiveData<Boolean?>
         get() = _isTaskFinished
 
-    val buttonsVisible = Transformations.map(tasks) {
-        it.isNotEmpty()
+    val buttonsVisible = Transformations.map(currentTasks) {
+        it?.isNotEmpty()
     }
 
     init {
         _clickedTask.value = null
         _isTaskFinished.value = null
+        filterState.value = FilterStatus.ACTIVE_TASKS
     }
 
     fun onTaskClicked(task: Task) {
@@ -75,4 +87,35 @@ class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
         super.onCleared()
         job.cancel()
     }
+
+    fun showAllTasks() {
+        if (filterState.value != FilterStatus.ALL_TASKS){
+            filterState.value = FilterStatus.ALL_TASKS
+            checkFilterStatus(allTasks.value!!)
+        }
+    }
+
+
+    fun showActiveTasks(){
+        if (filterState.value != FilterStatus.ACTIVE_TASKS){
+            filterState.value = FilterStatus.ACTIVE_TASKS
+            checkFilterStatus(allTasks.value!!)
+        }
+    }
+
+    fun showCompletedTasks(){
+        if (filterState.value != FilterStatus.COMPLETED_TASKS){
+            filterState.value = FilterStatus.COMPLETED_TASKS
+            checkFilterStatus(allTasks.value!!)
+        }
+    }
+
+    fun checkFilterStatus(list: List<Task>) {
+        _currentTasks.value = when(filterState.value){
+            FilterStatus.ACTIVE_TASKS -> list.filter { !it.isCompleted }
+            FilterStatus.COMPLETED_TASKS -> list.filter { it.isCompleted }
+            else -> list
+        }
+    }
+
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_filter"
+        android:icon="@drawable/ic_baseline_filter_alt_24"
+        android:title="@string/filter"
+        app:showAsAction="always">
+
+        <menu>
+
+            <item android:id="@+id/filter_all"
+                android:title="@string/show_all" />
+
+            <item android:id="@+id/filter_active"
+                android:title="@string/show_active"/>
+
+            <item android:id="@+id/filter_completed"
+                android:title="@string/show_completed"/>
+
+        </menu>
+
+
+    </item>
+
+</menu>

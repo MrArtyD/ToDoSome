@@ -21,11 +21,11 @@ interface TasksDatabaseDao {
     @Query("SELECT * FROM task_to_do ORDER BY taskId DESC")
     fun getAllTasks(): LiveData<List<Task>>
 
-    @Query("SELECT * FROM task_to_do WHERE is_completed = 0")
-    fun getToDoTasks(): LiveData<List<Task>>
-
-    @Query("SELECT * FROM task_to_do WHERE is_completed = 1")
-    fun getCompletedTasks(): LiveData<List<Task>>
+//    @Query("SELECT * FROM task_to_do WHERE is_completed = 0")
+//    fun getToDoTasks(): LiveData<List<Task>>
+//
+//    @Query("SELECT * FROM task_to_do WHERE is_completed = 1")
+//    fun getCompletedTasks(): LiveData<List<Task>>
 
     @Query("DELETE FROM task_to_do")
     fun clearAll()

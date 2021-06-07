@@ -36,10 +36,18 @@ class TaskAdapter(val clickDetails: TaskListener, val clickCompleteTask: TaskLis
             binding.tvDateTaskItem.text = context
                 .getString(R.string.created_date, convertDateToString(item.creationTime))
 
-            binding.cbTaskItem.setOnClickListener { checkBox ->
-                if (checkBox is CheckBox){
-                    item.isCompleted = checkBox.isChecked
-                    clickCompleteTask.onClick(item)
+
+            if (item.isCompleted){
+                binding.cbTaskItem.isChecked = true
+                binding.cbTaskItem.setOnClickListener {
+                    binding.cbTaskItem.isChecked = true
+                }
+            }else{
+                binding.cbTaskItem.setOnClickListener { checkBox ->
+                    if (checkBox is CheckBox){
+                        item.isCompleted = checkBox.isChecked
+                        clickCompleteTask.onClick(item)
+                    }
                 }
             }
         }

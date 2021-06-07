@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">ToDoSome</string>
     <string name="tasks">Tasks</string>
+    <string name="all_tasks">All tasks</string>
     <string name="active_tasks">Active tasks</string>
+    <string name="completed_tasks">Completed tasks</string>
     <string name="complete_button">Complete</string>
     <string name="title">Title</string>
     <string name="set">Set</string>
@@ -15,4 +17,8 @@
     <string name="clear_all">Clear All</string>
     <string name="created_date">Created on: %s</string>
     <string name="congratulations">Congratulations! You have finished the task!</string>
+    <string name="filter">Filter</string>
+    <string name="show_all">Show all</string>
+    <string name="show_completed">Show completed</string>
+    <string name="show_active">Show active</string>
 </resources>

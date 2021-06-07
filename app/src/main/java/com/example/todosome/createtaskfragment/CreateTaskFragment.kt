@@ -57,12 +57,10 @@ class CreateTaskFragment : Fragment() {
         })
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.create_task_menu, menu)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -75,7 +73,6 @@ class CreateTaskFragment : Fragment() {
             }
         }
     }
-
 
     private fun createTask() {
         val title = binding.etTitle.text.toString()
