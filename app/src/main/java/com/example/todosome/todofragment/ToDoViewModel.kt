@@ -22,9 +22,9 @@ class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
     val allTasks : LiveData<List<Task>>
         get() = _allTasks
 
-    private var _currentTasks = MutableLiveData<List<Task>>()
-    val currentTasks : LiveData<List<Task>>
-        get() = _currentTasks
+    private var _filteredTasks = MutableLiveData<List<Task>>()
+    val filteredTasks : LiveData<List<Task>>
+        get() = _filteredTasks
 
     private val _clickedTask = MutableLiveData<Task?>()
     val clickedTask: LiveData<Task?>
@@ -34,9 +34,6 @@ class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
     val isTaskFinished: LiveData<Boolean?>
         get() = _isTaskFinished
 
-    val buttonsVisible = Transformations.map(currentTasks) {
-        it?.isNotEmpty()
-    }
 
     init {
         _clickedTask.value = null
@@ -46,18 +43,6 @@ class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
 
     fun onTaskClicked(task: Task) {
         _clickedTask.value = task
-    }
-
-    fun onClear() {
-        uiScope.launch {
-            clear()
-        }
-    }
-
-    private suspend fun clear() {
-        withContext(Dispatchers.IO) {
-            databaseDao.clearAll()
-        }
     }
 
     fun taskWasClicked(){
@@ -83,39 +68,37 @@ class ToDoViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel() {
         _isTaskFinished.value = null
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
-
     fun showAllTasks() {
         if (filterState.value != FilterStatus.ALL_TASKS){
             filterState.value = FilterStatus.ALL_TASKS
-            checkFilterStatus(allTasks.value!!)
+            filterTasks(allTasks.value!!)
         }
     }
-
 
     fun showActiveTasks(){
         if (filterState.value != FilterStatus.ACTIVE_TASKS){
             filterState.value = FilterStatus.ACTIVE_TASKS
-            checkFilterStatus(allTasks.value!!)
+            filterTasks(allTasks.value!!)
         }
     }
 
     fun showCompletedTasks(){
         if (filterState.value != FilterStatus.COMPLETED_TASKS){
             filterState.value = FilterStatus.COMPLETED_TASKS
-            checkFilterStatus(allTasks.value!!)
+            filterTasks(allTasks.value!!)
         }
     }
 
-    fun checkFilterStatus(list: List<Task>) {
-        _currentTasks.value = when(filterState.value){
+    fun filterTasks(list: List<Task>) {
+        _filteredTasks.value = when(filterState.value){
             FilterStatus.ACTIVE_TASKS -> list.filter { !it.isCompleted }
             FilterStatus.COMPLETED_TASKS -> list.filter { it.isCompleted }
             else -> list
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        job.cancel()
+    }
 }

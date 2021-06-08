@@ -42,12 +42,6 @@ class ToDoFragment : Fragment() {
         initAdapter()
         initButtonsClick()
 
-        viewModel.buttonsVisible.observe(viewLifecycleOwner, {
-            if (it == true){
-                binding.btnClear.isEnabled = it
-            }
-        })
-
         viewModel.clickedTask.observe(viewLifecycleOwner, {
             it?.let {
                 findNavController().navigate(
@@ -86,10 +80,10 @@ class ToDoFragment : Fragment() {
         binding.rvTasks.adapter = adapter
 
         viewModel.allTasks.observe(viewLifecycleOwner, {
-            viewModel.checkFilterStatus(it)
+            viewModel.filterTasks(it)
         })
 
-        viewModel.currentTasks.observe(viewLifecycleOwner, {
+        viewModel.filteredTasks.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }
@@ -101,9 +95,6 @@ class ToDoFragment : Fragment() {
             findNavController().navigate(ToDoFragmentDirections.actionToDoFragmentToCreateTaskFragment())
         }
 
-        binding.btnClear.setOnClickListener {
-            viewModel.onClear()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -115,19 +106,16 @@ class ToDoFragment : Fragment() {
         return when(item.itemId){
             R.id.filter_all -> {
                 showAllTasks()
-                Toast.makeText(this.activity, "All", Toast.LENGTH_SHORT).show()
                 true
             }
 
             R.id.filter_active -> {
                 showActiveTasks()
-                Toast.makeText(this.activity, "All active", Toast.LENGTH_SHORT).show()
                 true
             }
 
             R.id.filter_completed -> {
                 showCompletedTasks()
-                Toast.makeText(this.activity, "All completed", Toast.LENGTH_SHORT).show()
                 true
             }
 

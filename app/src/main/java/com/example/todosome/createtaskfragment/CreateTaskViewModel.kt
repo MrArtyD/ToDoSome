@@ -29,6 +29,8 @@ class CreateTaskViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel
         if (title.isEmpty()) {
             _isEditTextFilled.value = false
         } else {
+            _isEditTextFilled.value = true
+
             uiScope.launch {
                 val task = Task(title = title, description = description)
                 insert(task)
@@ -41,10 +43,6 @@ class CreateTaskViewModel(private val databaseDao: TasksDatabaseDao) : ViewModel
             databaseDao.insert(task)
         }
         _taskCreated.value = true
-    }
-
-    fun editTextFilled() {
-        _isEditTextFilled.value = true
     }
 
     override fun onCleared() {

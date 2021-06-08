@@ -1,14 +1,17 @@
 package com.example.todosome.edittaskfragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.todosome.R
 import com.example.todosome.database.TasksDatabase
 import com.example.todosome.databinding.EditTaskFragmentBinding
+import com.google.android.material.snackbar.Snackbar
 
 class EditTaskFragment : Fragment() {
 
@@ -28,6 +31,16 @@ class EditTaskFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(EditTaskViewModel::class.java)
 
+
+
+        initEvents()
+        initFields()
+        setHasOptionsMenu(true)
+
+        return binding.root
+    }
+
+    private fun initEvents() {
         viewModel.returnBack.observe(viewLifecycleOwner, {
             if (it == true) {
                 findNavController()
@@ -36,10 +49,15 @@ class EditTaskFragment : Fragment() {
             }
         })
 
-        initFields()
-        setHasOptionsMenu(true)
-        Log.d("EditTaskFragment", "Edit created")
-        return binding.root
+        viewModel.isEditTextFilled.observe(viewLifecycleOwner, {
+            if (it == false) {
+                Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.fill_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 
     private fun initFields() {
@@ -52,7 +70,6 @@ class EditTaskFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.edit_task_menu, menu)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -74,11 +91,21 @@ class EditTaskFragment : Fragment() {
         val args = EditTaskFragmentArgs.fromBundle(requireArguments())
         val newTitle = binding.etTitle.text.toString()
         val newDescription = binding.etDescription.text.toString()
+
+        hideKeyboard()
         viewModel.updateTask(args.taskId, newTitle, newDescription)
     }
 
     private fun deleteTask() {
         val args = EditTaskFragmentArgs.fromBundle(requireArguments())
         viewModel.deleteTask(args.taskId)
+    }
+
+    private fun hideKeyboard() {
+        this.requireActivity().currentFocus?.let { view ->
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 }

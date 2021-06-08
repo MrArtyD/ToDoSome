@@ -16,17 +16,29 @@ class EditTaskViewModel(val databaseDao: TasksDatabaseDao) : ViewModel() {
     val returnBack: LiveData<Boolean?>
         get() = _returnBack
 
+    private val _isEditTextFilled = MutableLiveData<Boolean?>()
+    val isEditTextFilled: LiveData<Boolean?>
+        get() = _isEditTextFilled
+
     init {
         _returnBack.value = null
+        _isEditTextFilled.value = null
     }
 
     fun updateTask(taskId: Long, newTitle: String, newDescription: String) {
-        uiScope.launch {
-            val task = getTask(taskId)
-            task.title = newTitle
-            task.description = newDescription
-            update(task)
+        if (newTitle.isEmpty()){
+            _isEditTextFilled.value = false
+        }else{
+            _isEditTextFilled.value = true
+
+            uiScope.launch {
+                val task = getTask(taskId)
+                task.title = newTitle
+                task.description = newDescription
+                update(task)
+            }
         }
+
     }
 
     private suspend fun getTask(taskId: Long): Task {
@@ -62,4 +74,8 @@ class EditTaskViewModel(val databaseDao: TasksDatabaseDao) : ViewModel() {
     fun doneEditing() {
         _returnBack.value = null
     }
+
+//    fun editTextFilled() {
+//        _isEditTextFilled.value = true
+//    }
 }

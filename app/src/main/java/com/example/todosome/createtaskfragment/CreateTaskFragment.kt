@@ -1,8 +1,10 @@
 package com.example.todosome.createtaskfragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -43,7 +45,6 @@ class CreateTaskFragment : Fragment() {
                     getString(R.string.fill_message),
                     Snackbar.LENGTH_SHORT
                 ).show()
-                viewModel.editTextFilled()
             }
         })
 
@@ -78,6 +79,16 @@ class CreateTaskFragment : Fragment() {
         val title = binding.etTitle.text.toString()
         val description = binding.etDescription.text.toString()
 
+        hideKeyboard()
+
         viewModel.createTask(title, description)
+    }
+
+    private fun hideKeyboard() {
+        this.requireActivity().currentFocus?.let { view ->
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 }
