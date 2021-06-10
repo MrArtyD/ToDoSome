@@ -1,8 +1,9 @@
 package com.example.todosome.edittaskfragment
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
@@ -78,7 +79,7 @@ class EditTaskFragment : Fragment() {
                 true
             }
             R.id.item_delete -> {
-                deleteTask()
+                alertTaskDeletion()
                 true
             }
             else -> {
@@ -94,6 +95,17 @@ class EditTaskFragment : Fragment() {
 
         hideKeyboard()
         viewModel.updateTask(args.taskId, newTitle, newDescription)
+    }
+
+    private fun alertTaskDeletion() {
+        AlertDialog.Builder(this.context)
+            .setTitle("Delete task")
+            .setMessage("Do you want to delete this task?")
+            .setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
+                deleteTask()
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun deleteTask() {
