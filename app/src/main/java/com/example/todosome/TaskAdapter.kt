@@ -28,24 +28,32 @@ class TaskAdapter(val clickDetails: TaskListener, val clickCompleteTask: TaskLis
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Task, clickDetails: TaskListener, clickCompleteTask: TaskListener) {
-            binding.itemLayout.setOnClickListener {
-                clickDetails.onClick(item)
-            }
 
             binding.tvTitleTaskItem.text = item.title
-            binding.tvDateTaskItem.text = context
-                .getString(R.string.created_date, convertDateToString(item.creationTime))
-
 
             if (item.isCompleted){
+                binding.itemLayout.setOnClickListener {}
+
+                binding.tvDateTaskItem.text = context
+                    .getString(R.string.completed_date, convertDateToString(item.completionTime))
+
                 binding.cbTaskItem.isChecked = true
                 binding.cbTaskItem.setOnClickListener {
                     binding.cbTaskItem.isChecked = true
                 }
+
             }else{
+                binding.itemLayout.setOnClickListener {
+                    clickDetails.onClick(item)
+                }
+
+                binding.tvDateTaskItem.text = context
+                    .getString(R.string.created_date, convertDateToString(item.creationTime))
+
                 binding.cbTaskItem.setOnClickListener { checkBox ->
                     if (checkBox is CheckBox){
                         item.isCompleted = checkBox.isChecked
+                        item.completionTime = System.currentTimeMillis()
                         clickCompleteTask.onClick(item)
                     }
                 }
@@ -54,7 +62,7 @@ class TaskAdapter(val clickDetails: TaskListener, val clickCompleteTask: TaskLis
 
         @SuppressLint("SimpleDateFormat")
         private fun convertDateToString(creationTime: Long): String {
-            return SimpleDateFormat("dd/MMM/yy - HH:mm").format(creationTime).toString()
+            return SimpleDateFormat("dd/MM/yy - HH:mm").format(creationTime).toString()
         }
 
         companion object {

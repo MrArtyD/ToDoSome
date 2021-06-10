@@ -18,6 +18,9 @@ data class Task(
     @ColumnInfo(name = "creation_time_millis")
     val creationTime: Long = System.currentTimeMillis(),
 
+    @ColumnInfo(name = "completion_time_millis")
+    var completionTime: Long = 0L,
+
     @ColumnInfo(name = "is_completed")
     var isCompleted: Boolean = false
 )

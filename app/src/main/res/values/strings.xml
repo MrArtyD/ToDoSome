@@ -16,6 +16,7 @@
     <string name="fill_message">Please enter title for the task</string>
     <string name="clear_all">Clear All</string>
     <string name="created_date">Created on: %s</string>
+    <string name="completed_date">Completed on: %s</string>
     <string name="congratulations">Congratulations! You have finished the task!</string>
     <string name="filter">Filter</string>
     <string name="show_all">Show all</string>
