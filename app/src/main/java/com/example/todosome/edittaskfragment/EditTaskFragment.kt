@@ -99,12 +99,12 @@ class EditTaskFragment : Fragment() {
 
     private fun alertTaskDeletion() {
         AlertDialog.Builder(this.context)
-            .setTitle("Delete task")
-            .setMessage("Do you want to delete this task?")
-            .setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
+            .setTitle(getString(R.string.delete_task_alert))
+            .setMessage(getString(R.string.delete_alert_message))
+            .setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                 deleteTask()
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(getString(R.string.no), null)
             .show()
     }
 
